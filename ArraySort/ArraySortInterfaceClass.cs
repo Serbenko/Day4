@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace ArraySort
 {
-    public delegate int Comparator(int[] a, int[] b);
-
-    public static class ArraySortClass
+    public static class ArraySortInterfaceClass
     {
         #region Public Methods
-
-        public static void Sort(int[][] array, Comparator compare)
+        public static void Sort(int[][] array, IComparer<int[]> compare)
         {
             if (array == null || compare == null)
                 throw new ArgumentNullException();
@@ -20,7 +17,7 @@ namespace ArraySort
             {
                 for (int j = 0; j < array.GetLength(0) - i - 1; j++)
                 {
-                    if (compare(array[j], array[j + 1]) > 0)
+                    if (compare.Compare(array[j], array[j + 1]) > 0)
                         Swamp(ref array[j], ref array[j + 1]);
                 }
             }
@@ -35,5 +32,19 @@ namespace ArraySort
             b = tmp;
         }
         #endregion
+    }
+
+    public class Comparation : IComparer<int[]>
+    {
+        Comparator comparator;
+
+        public Comparation(Comparator comparator)
+        {
+            this.comparator = comparator;
+        }
+        public int Compare(int[] a, int[] b)
+        {
+            return comparator(a, b);
+        }
     }
 }
