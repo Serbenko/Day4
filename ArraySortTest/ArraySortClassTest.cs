@@ -21,19 +21,12 @@ namespace ArraySortTest
                               };
         [Test]
         [TestCaseSource(typeof(DataClass), "SortData")]
-        public void SortTest(int[][] array, IComparer<int[]> comp)
+        public void SortTest(int[][] array, IComparer<int[]> comp, ArraySortClass sort)
         {
-            ArraySortClass.Sort(jaggedArray, comp.Compare);
+            sort.Sort(jaggedArray, comp);
             CollectionAssert.AreEqual(array, jaggedArray);
         }
 
-        [Test]
-        [TestCaseSource(typeof(DataClass), "SortDataInterface")]
-        public void SortTestInterface(int[][] array, Comparator comp)
-        {
-            ArraySortInterfaceClass.Sort(jaggedArray, new Comparation(comp));
-            CollectionAssert.AreEqual(array, jaggedArray);
-        }
         public class DataClass
         {
             public IEnumerable<TestCaseData> SortData
@@ -41,32 +34,22 @@ namespace ArraySortTest
                 get
                 {
                     yield return new TestCaseData(new [] {null, null, new[] { 0, 0, 0 }, new[] { 1, 2, 3, 4, 5, 6 },
-                        new[] { 15, 20, 18, 10 }, new [] {-195, 200, 25, 18, -140} }, new MaxElementComparator());
+                        new[] { 15, 20, 18, 10 }, new [] {-195, 200, 25, 18, -140} }, new MaxElementComparator(), new InterfaceToDelegateArraySort());
                     yield return new TestCaseData(new[] {null, null, new [] {-195, 200, 25, 18, -140}, new[] { 0, 0, 0 },
-                        new[] { 1, 2, 3, 4, 5, 6 }, new[] { 15, 20, 18, 10 }}, new SumComparator());
+                        new[] { 1, 2, 3, 4, 5, 6 }, new[] { 15, 20, 18, 10 }}, new SumComparator(), new InterfaceToDelegateArraySort());
                     yield return new TestCaseData(new[] { new [] {-195, 200, 25, 18, -140},  new[] { 15, 20, 18, 10 },
-                        new[] { 1, 2, 3, 4, 5, 6 }, new[] { 0, 0, 0 }, null, null }, new MaxElementComparatorDec());
+                        new[] { 1, 2, 3, 4, 5, 6 }, new[] { 0, 0, 0 }, null, null }, new MaxElementComparatorDec(), new InterfaceToDelegateArraySort());
                     yield return new TestCaseData(new[] {new[] { 15, 20, 18, 10 }, new[] { 1, 2, 3, 4, 5, 6 }, new[] { 0, 0, 0 },
-                        new [] {-195, 200, 25, 18, -140}, null, null }, new SumComparatorDec());
-                }
-            }
+                        new [] {-195, 200, 25, 18, -140}, null, null }, new SumComparatorDec(), new InterfaceToDelegateArraySort());
 
-            public IEnumerable<TestCaseData> SortDataInterface
-            {
-                get
-                {
-                    yield return new TestCaseData(new[] {null, null, new[] { 0, 0, 0 }, new[] { 1, 2, 3, 4, 5, 6 },
-                        new[] { 15, 20, 18, 10 }, new [] {-195, 200, 25, 18, -140} },
-                        new Comparator( new MaxElementComparator().Compare));
-                    yield return new TestCaseData(new[] {null, null, new [] {-195, 200, 25, 18, -140}, new[] { 0, 0, 0 },
-                        new[] { 1, 2, 3, 4, 5, 6 }, new[] { 15, 20, 18, 10 }},
-                         new Comparator(new SumComparator().Compare));
-                    yield return new TestCaseData(new[] { new [] {-195, 200, 25, 18, -140},  new[] { 15, 20, 18, 10 },
-                        new[] { 1, 2, 3, 4, 5, 6 }, new[] { 0, 0, 0 }, null, null },
-                         new Comparator(new MaxElementComparatorDec().Compare));
-                    yield return new TestCaseData(new[] {new[] { 15, 20, 18, 10 }, new[] { 1, 2, 3, 4, 5, 6 }, new[] { 0, 0, 0 },
-                        new [] {-195, 200, 25, 18, -140}, null, null },
-                         new Comparator(new SumComparatorDec().Compare));
+
+                    yield return new TestCaseData(new[] { new[] { 0, 0, 0 }, new[] { 1, 2, 3, 4, 5, 6 },
+                        new[] { 15, 20, 18, 10 }, new [] {-195, 200, 25, 18, -140}, null, null, }, new ArraySortAdapter<int[]>((a, b) => Math.Abs(a.Max()) - Math.Abs(b.Max())),
+                        new DelegateToInterfaceArraySort());
+                    yield return new TestCaseData(new[] { new [] {-195, 200, 25, 18, -140}, new[] { 0, 0, 0 },
+                        new[] { 1, 2, 3, 4, 5, 6 }, new[] { 15, 20, 18, 10 }, null, null,}, new ArraySortAdapter<int[]>((a, b) => a.Sum() - b.Sum()),
+                        new DelegateToInterfaceArraySort());
+
                 }
             }
         }

@@ -6,29 +6,16 @@ using System.Threading.Tasks;
 
 namespace ArraySort
 {
-    public delegate int Comparator(int[] a, int[] b);
-
-    public static class ArraySortClass
+    public abstract class ArraySortClass
     {
         #region Public Methods
 
-        public static void Sort(int[][] array, Comparator compare)
-        {
-            if (array == null || compare == null)
-                throw new ArgumentNullException();
-            for (int i = 0; i < array.GetLength(0) - 1; i++)
-            {
-                for (int j = 0; j < array.GetLength(0) - i - 1; j++)
-                {
-                    if (compare(array[j], array[j + 1]) > 0)
-                        Swamp(ref array[j], ref array[j + 1]);
-                }
-            }
-        }
+        public abstract void Sort<T>(T[] array, IComparer<T> compare);
+     
         #endregion
 
-        #region Private Metods
-        private static void Swamp(ref int[] a, ref int[] b)
+        #region Protected Metods
+        protected void Swamp<T>(ref T a, ref T b)
         {
             var tmp = a;
             a = b;
